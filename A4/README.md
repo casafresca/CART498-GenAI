@@ -39,7 +39,7 @@ Enter a short, concrete description of an ordinary object from a pocket, bag, or
 
 The label system prompt makes six explicit rules. It asks the model to preserve the object's ordinary identity; make humor from the gap between use and institutional importance; invent all artist, theorist, book, and provenance identities; return a fixed set of JSON fields; keep the extended label to 80–120 words while citing an invented theorist and book; and keep dimensions plausible and legible.
 
-The selected IAE features are deliberate abstraction, nominalization, institutional language, and the tension between material specificity and theoretical interpretation. The prompt calls out devices such as “the conditions of its visibility” and asks for exaggeration while maintaining a concrete description of the submitted thing. The app validates the model's response fields and extended-label word count before showing it.
+The selected IAE features are deliberate abstraction, nominalization, institutional language, and the tension between material specificity and theoretical interpretation. The prompt calls out devices such as “the conditions of its visibility” and asks for exaggeration while maintaining a concrete description of the submitted thing. The app uses a strict JSON schema so every required tombstone field is returned as text, then validates the extended-label word count. If the prose misses the 80–120 word range, it automatically asks once for a corrected version before showing an error.
 
 ## Label-to-image chain
 
