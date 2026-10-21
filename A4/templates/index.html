@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Turn an everyday object into an imagined work of contemporary art.">
+  <title>The Ordinary, Installed</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <a class="wordmark" href="{{ url_for('index') }}">THE ORDINARY, INSTALLED</a>
+    <span class="edition">A pocket museum · 2026</span>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">A small exercise in context</p>
+      <h1 id="page-title">What if it were<br><em>already art?</em></h1>
+      <p class="lede">Describe something you carry, use, or leave on your desk. We’ll give it a place in the museum.</p>
+      <form action="{{ url_for('generate') }}" method="post" class="object-form">
+        <label for="object_description">Your ordinary object</label>
+        <textarea id="object_description" name="object_description" rows="3" minlength="3" maxlength="500" required placeholder="A blue plastic hair clip with one bent tooth…">{{ object_description }}</textarea>
+        <div class="form-footer">
+          <small>Be specific. The object stays ordinary; the context changes.</small>
+          <button type="submit">Install the work <span aria-hidden="true">↗</span></button>
+        </div>
+      </form>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}<div class="notices" role="alert">{% for category, message in messages %}<p class="notice {{ category }}">{{ message }}</p>{% endfor %}</div>{% endif %}
+      {% endwith %}
+    </section>
+
+    {% if result %}
+    <section class="exhibition" aria-labelledby="exhibition-title">
+      <div class="section-heading"><p class="eyebrow">On view now</p><h2 id="exhibition-title">A new acquisition</h2></div>
+      <div class="gallery-layout">
+        <figure class="artwork">
+          {% if result.image %}<img src="{{ result.image }}" alt="AI-generated exhibition view of {{ result.label.title }} by {{ result.label.artist }}">
+          {% else %}<div class="image-placeholder">The gallery is preparing this view.</div>{% endif %}
+          <figcaption>Installation view · The Museum of Near Things</figcaption>
+          {% if result.image_error %}<p class="image-error">{{ result.image_error }}</p>{% endif %}
+        </figure>
+        <article class="wall-label" aria-label="Museum wall label">
+          <p class="eyebrow">{{ result.label.artist }} <span>·</span> {{ result.label.year }}</p>
+          <h3>{{ result.label.title }}</h3>
+          <p class="artist-bio">{{ result.label.artist_bio }}</p>
+          <dl class="tombstone">
+            <div><dt>Medium</dt><dd>{{ result.label.medium }}</dd></div>
+            <div><dt>Dimensions</dt><dd>{{ result.label.dimensions }}</dd></div>
+            <div><dt>Provenance</dt><dd>{{ result.label.provenance }}</dd></div>
+            <div><dt>Credit</dt><dd>{{ result.label.credit_line }}</dd></div>
+          </dl>
+          <p class="extended-label">{{ result.label.extended_label }}</p>
+          <p class="word-count">{{ result.label.word_count }} words</p>
+        </article>
+      </div>
+    </section>
+    {% endif %}
+  </main>
+  <footer><span>The Museum of Near Things</span><span>Nothing is changed but the conditions of looking.</span></footer>
+</body>
+</html>
