@@ -26,6 +26,10 @@
           <button type="submit">Install the work <span aria-hidden="true">↗</span></button>
         </div>
       </form>
+      <div id="generation-status" class="generation-status" role="status" hidden>
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Convincing the curators your object belongs in a museum...</span>
+      </div>
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}<div class="notices" role="alert">{% for category, message in messages %}<p class="notice {{ category }}">{{ message }}</p>{% endfor %}</div>{% endif %}
       {% endwith %}
@@ -59,5 +63,25 @@
     {% endif %}
   </main>
   <footer><span>The Museum of Near Things</span><span>Nothing is changed but the conditions of looking.</span></footer>
+  <script>
+    const form = document.querySelector('.object-form');
+    const button = form.querySelector('button[type="submit"]');
+    const status = document.querySelector('#generation-status');
+
+    function resetLoading() {
+      button.disabled = false;
+      form.removeAttribute('aria-busy');
+      status.hidden = true;
+    }
+
+    form.addEventListener('submit', () => {
+      button.disabled = true;
+      form.setAttribute('aria-busy', 'true');
+      status.hidden = false;
+    });
+
+    // Restore the form when returning via the browser's Back button.
+    window.addEventListener('pageshow', resetLoading);
+  </script>
 </body>
 </html>

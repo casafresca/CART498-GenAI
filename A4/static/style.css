@@ -2,3 +2,26 @@
 
 :root{--paper:#f5f3ee;--ink:#20211e;--muted:#77776e;--line:#d9d6cc;--accent:#ba4934;--white:#fffefa;--serif:'Playfair Display',Georgia,serif;--sans:'DM Sans',Arial,sans-serif;--mono:'DM Mono',monospace}
 *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}.site-header,footer{display:flex;justify-content:space-between;align-items:center;padding:22px 5.5vw;border-bottom:1px solid var(--line)}.wordmark{font:500 11px var(--mono);letter-spacing:.12em;color:var(--ink);text-decoration:none}.edition,footer{font:11px var(--mono);color:var(--muted)}main{max-width:1200px;margin:0 auto;padding:0 5.5vw}.intro{max-width:650px;padding:86px 0 76px}.eyebrow{font:10px var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}.intro h1{font:500 clamp(48px,7vw,80px)/1.02 var(--serif);letter-spacing:-.045em;margin:0 0 22px}.intro h1 em{color:var(--accent)}.lede{max-width:490px;color:#585950;font-size:17px;margin:0 0 38px}.object-form{border-top:1px solid var(--ink);padding-top:17px}.object-form label{display:block;font:11px var(--mono);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}.object-form textarea{display:block;width:100%;resize:vertical;border:0;border-bottom:1px solid var(--line);background:transparent;padding:12px 0;font:18px/1.5 var(--serif);color:var(--ink);outline:none}.object-form textarea:focus{border-color:var(--accent)}.object-form textarea::placeholder{color:#aaa79d}.form-footer{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:17px}.form-footer small{color:var(--muted);font-size:11px}button{border:0;background:var(--ink);color:white;padding:13px 18px;font:11px var(--mono);cursor:pointer}button:hover{background:var(--accent)}button span{font-size:15px;margin-left:10px}.notices{margin-top:18px}.notice{padding:12px 15px;font-size:13px;background:#f1e3dc;border-left:2px solid var(--accent)}.exhibition{border-top:1px solid var(--line);padding:48px 0 75px}.section-heading{margin-bottom:25px}.section-heading h2{font:500 30px var(--serif);margin:0}.gallery-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.8fr);gap:7%;align-items:start}.artwork{margin:0}.artwork img,.image-placeholder{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#e8e5dc}.image-placeholder{display:grid;place-items:center;color:var(--muted);font:13px var(--mono)}figcaption,.image-error{font:10px var(--mono);color:var(--muted);margin-top:10px}.image-error{color:var(--accent)}.wall-label{background:var(--white);padding:27px 29px 23px;box-shadow:0 8px 25px #27241a0d}.wall-label>.eyebrow{margin-bottom:9px}.wall-label h3{font:500 30px/1.15 var(--serif);margin:0 0 8px}.artist-bio{font:italic 12px var(--serif);color:var(--muted);margin:0 0 23px}.tombstone{font-size:11px;margin:0 0 21px}.tombstone div{display:grid;grid-template-columns:90px 1fr;gap:12px;padding:7px 0;border-top:1px solid #e9e6df}.tombstone dt{font:10px var(--mono);text-transform:uppercase;color:var(--muted)}.tombstone dd{margin:0}.extended-label{font:14px/1.65 var(--serif);margin:0}.word-count{font:9px var(--mono);color:var(--muted);text-align:right;margin:10px 0 0}footer{border-top:1px solid var(--line);border-bottom:0;margin-top:25px}footer span:last-child{font-family:var(--serif);font-style:italic}@media(max-width:760px){.site-header{padding:18px 6vw}.edition{display:none}main{padding:0 6vw}.intro{padding:64px 0 55px}.gallery-layout{grid-template-columns:1fr;gap:25px}.wall-label{padding:24px}.form-footer{align-items:flex-start;flex-direction:column}footer{align-items:flex-start;gap:8px;flex-direction:column;padding:20px 6vw}}
+.generation-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  color: var(--muted);
+  font: 12px/1.6 var(--mono);
+}
+.generation-status[hidden] { display: none; }
+.spinner {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--line);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+button:disabled { opacity: .65; cursor: wait; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
+}
