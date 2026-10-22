@@ -16,14 +16,56 @@ A Flask web app that turns an everyday object into an imagined contemporary artw
 └── .gitignore             Keeps keys and local files out of Git
 ```
 
+## Entry point
+
+`app.py` creates the Flask application as `app`. Running `python app.py` starts the development server with debug mode disabled. `GET /` renders `templates/index.html`; the form submits to `POST /generate`, which generates a label and then an image. `static/style.css` supplies the styling. There is no frontend build step or Node.js dependency.
+
+Production servers import `app:app`: module `app`, Flask instance `app`.
+
 ## Run locally
 
 You need Python 3.10 or later and an OpenAI API key with access to the selected text and image models. From the project directory:
 
-1. Create and activate a virtual environment: `python -m venv .venv` then activate it (`.venv\Scripts\Activate.ps1` in PowerShell, or `source .venv/bin/activate` on macOS/Linux).
-2. Install dependencies: `pip install -r requirements.txt`.
-3. Copy `.env.example` to `.env`, then set `OPENAI_API_KEY` and a long random `FLASK_SECRET_KEY`. The app does not load `.env` automatically; export the variables in your shell or use a local environment manager. In PowerShell, for the current session: `$env:OPENAI_API_KEY="..."; $env:FLASK_SECRET_KEY="..."`.
-4. Start the app with `python app.py` and visit <http://localhost:5000>.
+If your terminal is at the repository root, run `cd A4` first. Python 3.12 matches the deployment's major/minor version.
+
+### Windows PowerShell
+
+Use the virtual environment's Python directly; activation and execution-policy changes are unnecessary.
+
+```powershell
+py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+
+$env:OPENAI_API_KEY = "replace-with-your-own-key"
+$env:FLASK_SECRET_KEY = .\.venv\Scripts\python.exe -c "import secrets; print(secrets.token_hex(32))"
+
+.\.venv\Scripts\python.exe app.py
+```
+
+If `py` is unavailable but `python --version` reports Python 3.10 or later, use `python -m venv .venv` for the first command. If neither command works, install Python and reopen the terminal.
+
+### macOS / Linux
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+
+export OPENAI_API_KEY="replace-with-your-own-key"
+export FLASK_SECRET_KEY="$(.venv/bin/python -c 'import secrets; print(secrets.token_hex(32))')"
+
+.venv/bin/python app.py
+```
+
+Open <http://localhost:5000>, describe an object, and choose **Install the work**. Keep the terminal running while using the app; stop the server with **Ctrl+C**. These environment variables last for the current shell session.
+
+**The app does not automatically load `.env`.** `.env.example` documents the available settings, but copying it to `.env` alone does not configure the app. Set variables as above or use an environment manager that loads them before starting Python.
+
+### Troubleshooting
+
+- **Missing-key message:** set `OPENAI_API_KEY` in the terminal that starts the server, then restart it.
+- **Missing Flask/OpenAI module:** install requirements using the same virtual environment Python used to run the app.
+- **Port 5000 in use:** set `$env:PORT = "5001"` in PowerShell or `export PORT=5001` on macOS/Linux, restart, and open <http://localhost:5001>.
+- **Generation fails:** inspect the server terminal for errors and check your API key, model access, and API billing. A label can require two text calls if its word count needs correction. If only the image fails, the label still appears.
 
 Each submission calls the OpenAI text and image APIs and may incur usage charges. To run only the web server without generating anything, start it and view the page; generation requires a configured key. The key is read from the server environment, never embedded in HTML or returned to the browser. Keep `.env` out of version control.
 
@@ -51,12 +93,12 @@ Language models learn statistical patterns from very large collections of text. 
 
 ## Deploy on Render
 
-1. Place all project files in the `A4` folder of `casafresca/CART498-GenAI`, replacing the empty `A4/gg` placeholder. Do not commit `.env`, API keys, or other secrets.
-2. In Render, either choose **New → Blueprint**, connect `casafresca/CART498-GenAI`, and set the Blueprint Path to `A4/render.yaml`; or create a **Web Service** and set **Root Directory** to `A4`, build command to `pip install -r requirements.txt`, and start command to `gunicorn app:app --bind 0.0.0.0:$PORT`.
+1. Push the app in the `A4` folder of your course repository. The included Blueprint assumes that directory layout. Do not commit `.env`, API keys, or other secrets.
+2. In Render, either choose **New → Blueprint**, connect `casafresca/CART498-GenAI`, and set the Blueprint Path to `A4/render.yaml`; or create a **Web Service** and set **Root Directory** to `A4`, build command to `pip install -r requirements.txt`, and start command to `gunicorn app:app --bind 0.0.0.0:$PORT --timeout 180`.
 3. In the service's **Environment** settings, set `OPENAI_API_KEY` to your secret key. Set `FLASK_SECRET_KEY` to a long random value if Render did not generate one from the Blueprint. Keep both values in Render's environment settings, not in Git.
 4. Deploy. Render installs the requirements and runs Gunicorn. Open the service URL, submit a sample object, and confirm both the label and image appear. Check Render logs if generation fails; model availability, API access, and account billing can affect requests.
 
-The included Blueprint sets `rootDir: A4` for the course monorepo, uses Python 3.12.8, generates a Flask secret key, and prompts for the OpenAI key. The included `Procfile` is provided for platforms that use it; Render uses the command in `render.yaml` or the service settings.
+The included Blueprint sets `rootDir: A4` for the course monorepo, uses Python 3.12.8, generates a Flask secret key, and prompts for the OpenAI key. Gunicorn is intended for Unix-like deployment environments; use the Python commands above for local Windows development. The included `Procfile` is provided for platforms that use it and omits the Blueprint's 180-second timeout (add `--timeout 180` if using that deployment path); Render uses the command in `render.yaml` or the service settings.
 
 ## Configuration
 
